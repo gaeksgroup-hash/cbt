@@ -1,55 +1,181 @@
 @extends('layouts.app')
 
-@section('title', 'Sertifikasi Ahli Kepabeanan')
+@section('title', 'SAK — Akses CBT')
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-    <nav class="flex items-center text-xs font-medium text-slate-500 space-x-2 mb-8">
-        <a href="{{ route('landing') }}" class="hover:text-[#012E34] transition-colors">Platform</a>
-        <span class="text-slate-300">/</span>
-        <span class="text-slate-800">Sertifikasi Ahli Kepabeanan</span>
-    </nav>
 
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-8 sm:p-10 mb-8">
-        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-4">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
-            CBT module foundation initialized.
-        </div>
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-[#012E34] tracking-tight mb-3">
-            Sertifikasi Ahli Kepabeanan
-        </h1>
-        <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
-            Simulasi pembelajaran mandiri dan uji kompetensi Ahli Kepabeanan berbasis Buku Panduan Resmi GAEKS Publishing.
-        </p>
+<section class="bg-[#012E34]">
+    <div class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
 
-        <div class="rounded-lg bg-amber-50 border border-amber-200 p-4 text-xs text-amber-800 flex items-start space-x-3">
-            <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <div class="leading-relaxed">
-                <strong>Informasi Akses:</strong> Akses User ID + Token akan diaktifkan pada development task berikutnya. Halaman ini adalah verifikasi routing program pada Milestone Foundation.
+            <div class="mb-5 text-sm font-semibold text-cyan-300">
+                GAEKS CBT / PROGRAM SAK
             </div>
+
+            <h1 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Sertifikasi Ahli Kepabeanan
+            </h1>
+
+            <p class="mt-4 max-w-2xl leading-7 text-slate-300">
+                Masukkan User ID peserta dan Token Bab untuk membuka paket simulasi yang sesuai.
+            </p>
+
         </div>
     </div>
+</section>
 
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sm:p-8">
-        <h2 class="text-lg font-bold text-[#012E34] mb-4">Struktur Kurikulum CBT SAK</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-slate-600">
-            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
-                <span class="font-bold text-[#012E34] block mb-1">Bab 01–02: Klasifikasi & Hitungan</span>
-                <span>Teknik Klasifikasi BTKI 2022, NPKB, serta Perhitungan Penerimaan Negara.</span>
+<section class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+
+    <div class="grid gap-8 lg:grid-cols-[.85fr_1.15fr]">
+
+        <aside class="order-2 lg:order-1">
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-7 shadow-sm">
+                <p class="text-xs font-semibold uppercase tracking-wider text-cyan-700">
+                    Sebelum masuk
+                </p>
+
+                <h2 class="mt-2 text-xl font-bold text-[#012E34]">
+                    Tiga langkah sederhana
+                </h2>
+
+                <div class="mt-7 space-y-6">
+
+                    <div class="flex gap-4">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#012E34] font-bold text-white">
+                            1
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-slate-800">
+                                Masukkan User ID
+                            </h3>
+                            <p class="mt-1 text-sm leading-6 text-slate-500">
+                                Gunakan ID peserta CBT Anda.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#012E34] font-bold text-white">
+                            2
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-slate-800">
+                                Masukkan Token Bab
+                            </h3>
+                            <p class="mt-1 text-sm leading-6 text-slate-500">
+                                Token akan mengarahkan Anda ke paket ujian yang sesuai.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#012E34] font-bold text-white">
+                            3
+                        </div>
+
+                        <div>
+                            <h3 class="font-semibold text-slate-800">
+                                Baca petunjuk
+                            </h3>
+                            <p class="mt-1 text-sm leading-6 text-slate-500">
+                                Pelajari durasi dan aturan sebelum memulai CBT.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
             </div>
-            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
-                <span class="font-bold text-[#012E34] block mb-1">Bab 03–07: Hukum & Konsep Teknis</span>
-                <span>UU Kepabeanan, Prosedur Ekspor-Impor, Fasilitas TPB/KITE, WCO, dan Nilai Pabean WTO.</span>
+
+            <div class="mt-5 rounded-2xl border border-cyan-200 bg-cyan-50 p-5 text-sm leading-6 text-cyan-900">
+                Token digunakan untuk menentukan paket ujian. Identitas peserta tetap berasal dari User ID.
             </div>
-            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
-                <span class="font-bold text-[#012E34] block mb-1">Bab 08–11: Prosedural & Sistemik</span>
-                <span>Penagihan, Keberatan/Banding, Lartas INSW, dan Ekosistem CEISA 4.0.</span>
-            </div>
-            <div class="p-3 rounded-lg bg-slate-50 border border-slate-100">
-                <span class="font-bold text-[#012E34] block mb-1">Bab 12: Tryout Akbar SAK</span>
-                <span>Simulasi komprehensif Sesi 1 (Uraian/Hitungan 75m) dan Sesi 2 (Pilihan Ganda 75m).</span>
+
+        </aside>
+
+        <div class="order-1 lg:order-2">
+
+            <div class="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm sm:p-10">
+
+                <div class="mb-8">
+                    <div class="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#012E34] text-lg font-bold text-white">
+                        G
+                    </div>
+
+                    <h2 class="text-2xl font-bold text-[#012E34]">
+                        Akses Paket CBT
+                    </h2>
+
+                    <p class="mt-2 text-sm leading-6 text-slate-500">
+                        Masukkan kredensial pembelajaran Anda untuk melanjutkan.
+                    </p>
+                </div>
+
+                @if ($errors->has('access'))
+                    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        {{ $errors->first('access') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('sak.access') }}" method="POST" class="space-y-6">
+                    @csrf
+
+                    <div>
+                        <label for="user_id" class="mb-2 block text-sm font-semibold text-slate-700">
+                            User ID
+                        </label>
+
+                        <input
+                            id="user_id"
+                            name="user_id"
+                            type="text"
+                            value="{{ old('user_id') }}"
+                            maxlength="64"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                            placeholder="GSAK_CBT001"
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100"
+                        >
+                    </div>
+
+                    <div>
+                        <label for="token" class="mb-2 block text-sm font-semibold text-slate-700">
+                            Token Bab
+                        </label>
+
+                        <input
+                            id="token"
+                            name="token"
+                            type="password"
+                            maxlength="128"
+                            autocomplete="off"
+                            spellcheck="false"
+                            required
+                            placeholder="Masukkan Token Bab"
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3.5 text-sm outline-none transition placeholder:text-slate-400 focus:border-cyan-600 focus:ring-4 focus:ring-cyan-100"
+                        >
+
+                        <p class="mt-2 text-xs text-slate-500">
+                            Token tidak akan ditampilkan kembali jika akses gagal.
+                        </p>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="flex w-full items-center justify-center rounded-xl bg-[#012E34] px-5 py-3.5 text-sm font-bold text-white transition hover:bg-[#01434B] focus:outline-none focus:ring-4 focus:ring-cyan-100"
+                    >
+                        Buka Paket Ujian
+                    </button>
+
+                </form>
+
             </div>
         </div>
+
     </div>
-</div>
+</section>
+
 @endsection
