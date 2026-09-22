@@ -12,5 +12,6 @@ if (file_exists($maintenance = $appPath.'/storage/framework/maintenance.php')) {
 
 require $appPath.'/vendor/autoload.php';
 
-(require_once $appPath.'/bootstrap/app.php')
-    ->handleRequest(Request::capture());
+$app = require_once $appPath.'/bootstrap/app.php';
+$app->usePublicPath(__DIR__);
+$app->handleRequest(Request::capture());

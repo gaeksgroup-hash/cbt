@@ -59,7 +59,7 @@
                     <a href="{{ route('sak.landing') }}" class="text-sm font-medium text-slate-600 hover:text-[#012E34] transition-colors">Program SAK</a>
                     <a href="{{ route('health') }}" target="_blank" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                        System OK
+                        Status sistem
                     </a>
                 </nav>
             </div>
@@ -76,7 +76,7 @@
             <div class="flex items-center space-x-6">
                 <span class="text-slate-400">cbt.gaeks.com</span>
                 <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Production Standard Architecture</span>
+                <span>Pratinjau pengembangan</span>
             </div>
         </div>
     </footer>
