@@ -33,3 +33,12 @@
 11. `attempt_answers` (FK: `attempt_id` -> `attempts.id` CASCADE, `attempt_question_id` -> `attempt_questions.id` CASCADE)
 12. `admin_users`
 13. `audit_logs`
+
+---
+
+## 6. Exam Token Security & Routing Architecture
+
+- **Token Storage**: Database **TIDAK PERNAH** menyimpan plaintext token ujian. Kolom `exam_tokens.token_hash` menyimpan digest HMAC-SHA256 sepanjang 64 karakter heksadesimal lowercase.
+- **Server-Side Pepper**: Komputasi digest menggunakan secret environment `CBT_TOKEN_PEPPER` yang terisolasi (`hash_hmac('sha256', NORMALIZED_TOKEN, CBT_TOKEN_PEPPER)`).
+- **Pepper Stability**: Nilai `CBT_TOKEN_PEPPER` harus stabil antar deployment. Rotasi pepper membutuhkan prosedur rehash terkoordinasi.
+- **Access Gate vs Identity**: Token berfungsi eksklusif sebagai *Exam Router* (penentu paket modul bab/tryout yang dituju), bukan sebagai kredensial autentikasi identitas peserta. Identitas peserta diverifikasi secara terpisah melalui `candidate_users.public_id`.
