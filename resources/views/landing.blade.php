@@ -7,7 +7,7 @@
     <div class="text-center max-w-3xl mx-auto mb-16">
         <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#012E34]/5 text-[#012E34] border border-[#012E34]/10 mb-4">
             <span class="w-2 h-2 rounded-full bg-[#0891B2] mr-2"></span>
-            Platform Foundation Ready
+            Pratinjau pengembangan
         </div>
         <h1 class="text-3xl sm:text-5xl font-extrabold text-[#012E34] tracking-tight mb-4">
             GAEKS CBT
@@ -16,14 +16,14 @@
             Computer-Based Testing Platform
         </p>
         <p class="text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            Platform simulasi ujian dan bank soal GAEKS. Dirancang dengan arsitektur deterministik, server-authoritative timer, riwayat belajar berkelanjutan, dan standar keandalan institusional.
+            Pratinjau platform CBT GAEKS. Halaman informasi sudah tersedia; pengerjaan ujian, penilaian, dan administrasi belum dibuka untuk publik.
         </p>
     </div>
 
     <div class="max-w-4xl mx-auto">
         <div class="flex items-center justify-between mb-6 pb-2 border-b border-slate-200">
             <h2 class="text-xl font-bold text-[#012E34]">Program Ujian</h2>
-            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Multi-Program Engine</span>
+            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pratinjau, bukan ujian aktif</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -31,18 +31,17 @@
                 <div>
                     <div class="flex items-center justify-between mb-3">
                         <span class="px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-[#012E34] text-white">Program Utama</span>
-                        <span class="text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">Initialized</span>
+                        <span class="text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">Dalam pengembangan</span>
                     </div>
                     <h3 class="text-xl font-bold text-[#012E34] mb-2">
                         Sertifikasi Ahli Kepabeanan
                     </h3>
                     <p class="text-sm text-slate-600 mb-4 leading-relaxed">
-                        Modul evaluasi mandiri dan simulasi ujian sertifikasi kepabeanan komprehensif mencakup Bab 01 s.d. Bab 11 serta Tryout Akbar SAK.
+                        Rencana modul evaluasi mandiri sertifikasi kepabeanan mencakup Bab 01 s.d. Bab 11 serta Tryout Akbar SAK. Akses ujian belum tersedia.
                     </p>
                     <ul class="text-xs text-slate-500 space-y-1.5 mb-6">
-                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#0891B2] mr-2"></span>110 Soal Chapter CBT (Bab 01–11)</li>
-                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#0891B2] mr-2"></span>Tryout Akbar 2 Sesi (Uraian & PG)</li>
-                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#0891B2] mr-2"></span>Routing Akses via User ID & Token</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#0891B2] mr-2"></span>Bank soal sumber: 110 soal bab dan 32 soal tryout</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#0891B2] mr-2"></span>Review editorial dan mesin ujian masih berlangsung</li>
                     </ul>
                 </div>
                 <div>

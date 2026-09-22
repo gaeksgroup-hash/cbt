@@ -13,36 +13,22 @@
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-8 sm:p-10 mb-8">
         <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-4">
             <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
-            Simulasi dan pembelajaran mandiri SAK
+            Pratinjau program SAK
         </div>
         <h1 class="text-2xl sm:text-3xl font-extrabold text-[#012E34] tracking-tight mb-3">
             Sertifikasi Ahli Kepabeanan
         </h1>
         <p class="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
-            Simulasi pembelajaran mandiri dan uji kompetensi Ahli Kepabeanan berbasis Buku Panduan Resmi GAEKS Publishing.
+            Rancangan pembelajaran mandiri dan uji kompetensi Ahli Kepabeanan berbasis materi GAEKS Publishing. Ujian belum dibuka untuk publik.
         </p>
 
-        <h2 class="font-bold text-[#012E34] mb-3">Cara menggunakan CBT</h2>
-        <p class="text-sm text-slate-600 mb-6">Masukkan User ID dan token dari materi Anda. Token menentukan paket ujian yang terbuka. Baca panduan dan coba demo sebelum memulai; waktu ujian tidak berhenti saat halaman direfresh.</p>
+        <h2 class="font-bold text-[#012E34] mb-3">Akses ujian belum tersedia</h2>
+        <p class="text-sm text-slate-600 mb-6">Kami sedang menyelesaikan alur pengerjaan, timer, penilaian, dan pemeriksaan soal. User ID dan token belum dapat dipakai untuk mengerjakan ujian pada pratinjau ini.</p>
 
         @if ($errors->has('access'))
             <div role="alert" class="rounded-lg bg-red-50 border border-red-200 text-red-800 text-sm p-4 mb-5">{{ $errors->first('access') }}</div>
         @endif
-        <form action="{{ route('sak.access') }}" method="POST" class="space-y-4">
-            @csrf
-            <div>
-                <label for="user_id" class="block text-sm font-semibold mb-1">User ID</label>
-                <input id="user_id" name="user_id" type="text" value="{{ old('user_id') }}" autocomplete="username" required maxlength="40" class="w-full rounded-lg border border-slate-300 px-4 py-3 uppercase focus:ring-2 focus:ring-cyan-600" placeholder="GSAK_CBT001">
-                @error('user_id') <p class="text-sm text-red-700 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="token" class="block text-sm font-semibold mb-1">Token ujian</label>
-                <input id="token" name="token" type="text" required maxlength="100" autocomplete="off" class="w-full rounded-lg border border-slate-300 px-4 py-3 uppercase focus:ring-2 focus:ring-cyan-600" placeholder="SAK-BAB01-BTKI">
-                @error('token') <p class="text-sm text-red-700 mt-1">{{ $message }}</p> @enderror
-            </div>
-            <p class="text-xs text-slate-500">User ID dan token diproses di server, tidak ditampilkan dalam alamat halaman.</p>
-            <button type="submit" class="rounded-lg bg-[#012E34] text-white font-semibold px-6 py-3 hover:bg-[#0F4C5C] focus:ring-2 focus:ring-cyan-600">Masuk ke panduan</button>
-        </form>
+        <p class="rounded-lg bg-amber-50 border border-amber-200 text-amber-900 text-sm p-4">Jangan masukkan User ID atau token di tahap ini. Kami akan membuka akses setelah fitur dan soal lolos pengujian.</p>
     </div>
 
     <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 sm:p-8">

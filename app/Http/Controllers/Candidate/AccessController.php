@@ -12,6 +12,10 @@ class AccessController extends Controller
 {
     public function store(Request $request, ExamTokenResolver $resolver): RedirectResponse
     {
+        if (config('cbt.preview_only')) {
+            return redirect()->route('sak.landing', status: 303);
+        }
+
         $request->validate([
             'user_id' => ['required', 'string', 'max:40'],
             'token' => ['required', 'string', 'max:100'],
