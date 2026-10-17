@@ -67,7 +67,7 @@ class CandidateAccessTest extends TestCase
         ] as $input) {
             $this->from('/sak')->post('/sak/access', $input)
                 ->assertRedirect('/sak')
-                ->assertSessionHasErrors(['access' => 'Order ID atau token buku tidak cocok dengan akses ujian ini.']);
+                ->assertSessionHasErrors(['access' => 'User ID / Order ID atau token buku tidak cocok dengan akses ujian ini.']);
         }
     }
 

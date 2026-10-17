@@ -35,16 +35,26 @@ class AccessController extends Controller
             return $this->invalidAccess($request);
         }
 
-        try {
-            if (! $entitlements->allows($orderId, $entitlementKey)) {
-                return $this->invalidAccess($request);
+        $candidate = CandidateUser::query()
+            ->where('public_id', $orderId)
+            ->where('status', 'active')
+            ->whereHas('entitlements', fn ($query) => $query
+                ->where('entitlement_key', $entitlementKey)
+                ->whereNull('revoked_at'))
+            ->first();
+
+        if (! $candidate) {
+            try {
+                if (! $entitlements->allows($orderId, $entitlementKey)) {
+                    return $this->invalidAccess($request);
+                }
+            } catch (EntitlementVerificationUnavailable) {
+                return back()->withInput($request->only('order_id'))
+                    ->withErrors(['access' => 'Verifikasi pembelian GDP sedang tidak tersedia. Coba kembali beberapa menit lagi.']);
             }
-        } catch (EntitlementVerificationUnavailable) {
-            return back()->withInput($request->only('order_id'))
-                ->withErrors(['access' => 'Verifikasi pembelian GDP sedang tidak tersedia. Coba kembali beberapa menit lagi.']);
         }
 
-        $candidate = CandidateUser::firstOrNew(['public_id' => $orderId]);
+        $candidate ??= CandidateUser::firstOrNew(['public_id' => $orderId]);
         if ($candidate->exists && $candidate->status === 'suspended') {
             return $this->invalidAccess($request);
         }
@@ -74,6 +84,6 @@ class AccessController extends Controller
     private function invalidAccess(Request $request): RedirectResponse
     {
         return back()->withInput($request->only('order_id'))
-            ->withErrors(['access' => 'Order ID atau token buku tidak cocok dengan akses ujian ini.']);
+            ->withErrors(['access' => 'User ID / Order ID atau token buku tidak cocok dengan akses ujian ini.']);
     }
 }

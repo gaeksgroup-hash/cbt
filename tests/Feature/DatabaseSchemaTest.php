@@ -7,11 +7,12 @@ use Tests\TestCase;
 class DatabaseSchemaTest extends TestCase {
     use RefreshDatabase;
 
-    public function test_all_thirteen_cbt_tables_exist(): void {
+    public function test_all_cbt_tables_exist(): void {
         $tables = [
             'candidate_users', 'programs', 'question_banks', 'exams',
             'exam_tokens', 'questions', 'question_options', 'exam_questions',
-            'attempts', 'attempt_questions', 'attempt_answers', 'admin_users', 'audit_logs'
+            'attempts', 'attempt_questions', 'attempt_answers', 'admin_users', 'audit_logs',
+            'candidate_entitlements', 'attempt_resets'
         ];
         foreach ($tables as $t) {$this->assertTrue(Schema::hasTable($t), "Table {$t} does not exist.");
         }
@@ -24,6 +25,9 @@ class DatabaseSchemaTest extends TestCase {
         $this->assertTrue(Schema::hasColumns('questions', ['id', 'question_bank_id', 'code', 'type', 'points', 'answer_key_json', 'scoring_rules_json']));$this->assertTrue(Schema::hasColumns('question_options', ['id', 'question_id', 'option_key', 'is_correct']));
         $this->assertTrue(Schema::hasColumns('exam_questions', ['id', 'exam_id', 'question_id', 'section_code', 'sort_order', 'weight']));$this->assertTrue(Schema::hasColumns('attempts', ['id', 'public_uuid', 'candidate_user_id', 'exam_id', 'attempt_no', 'status']));
         $this->assertTrue(Schema::hasColumns('attempt_questions', ['id', 'attempt_id', 'question_snapshot_json', 'display_order']));$this->assertTrue(Schema::hasColumns('attempt_answers', ['id', 'attempt_id', 'attempt_question_id', 'answer_json', 'is_marked_review']));
-        $this->assertTrue(Schema::hasColumns('admin_users', ['id', 'email', 'password_hash', 'role']));$this->assertTrue(Schema::hasColumns('audit_logs', ['id', 'actor_type', 'action', 'entity_type', 'created_at']));
+        $this->assertTrue(Schema::hasColumns('admin_users', ['id', 'username', 'email', 'password_hash', 'role']));
+        $this->assertTrue(Schema::hasColumns('candidate_entitlements', ['candidate_user_id', 'entitlement_key', 'source', 'revoked_at']));
+        $this->assertTrue(Schema::hasColumns('attempt_resets', ['candidate_user_id', 'exam_id', 'admin_user_id', 'reset_after_attempt_no']));
+        $this->assertTrue(Schema::hasColumns('audit_logs', ['id', 'actor_type', 'action', 'entity_type', 'created_at']));
     }
 }

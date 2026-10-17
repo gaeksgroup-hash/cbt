@@ -9,6 +9,8 @@ use App\Http\Controllers\Candidate\AttemptController;
 use App\Http\Controllers\Candidate\HistoryController;
 use App\Http\Controllers\Candidate\ResultController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
+use App\Http\Controllers\Admin\CandidateController as AdminCandidateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +35,18 @@ Route::get('/sak/attempts/{attempt}/result', [ResultController::class, 'show'])
     ->name('sak.attempts.result');
 Route::get('/sak/results', HistoryController::class)->name('sak.results');
 Route::get('/health', HealthController::class)->name('health');
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminAuthController::class, 'create'])->name('login');
+    Route::post('/login', [AdminAuthController::class, 'store'])->middleware('throttle:5,1')->name('login.store');
+
+    Route::middleware('cbt.admin')->group(function () {
+        Route::get('/', [AdminCandidateController::class, 'index'])->name('dashboard');
+        Route::post('/logout', [AdminAuthController::class, 'destroy'])->name('logout');
+        Route::post('/users', [AdminCandidateController::class, 'store'])->name('candidates.store');
+        Route::get('/users/{candidate}', [AdminCandidateController::class, 'show'])->name('candidates.show');
+        Route::patch('/users/{candidate}/status', [AdminCandidateController::class, 'updateStatus'])->name('candidates.status');
+        Route::post('/users/{candidate}/exams/{exam}/reset-attempts', [AdminCandidateController::class, 'resetAttempts'])
+            ->name('candidates.attempts.reset');
+    });
+});

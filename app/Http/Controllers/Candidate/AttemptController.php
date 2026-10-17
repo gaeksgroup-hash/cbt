@@ -7,6 +7,7 @@ use App\Models\Attempt;
 use App\Models\AttemptQuestion;
 use App\Models\Exam;
 use App\Services\CBT\AttemptService;
+use App\Services\CBT\AttemptLimitReached;
 use App\Services\CBT\ScoringService;
 use App\Support\CandidateSession;
 use Illuminate\Http\JsonResponse;
@@ -30,6 +31,10 @@ class AttemptController extends Controller
 
         try {
             $attempt = $attempts->start($candidate, $exam, $sessionCode);
+        } catch (AttemptLimitReached $exception) {
+            return back()
+                ->with('attempt_limit_reached', true)
+                ->withErrors(['attempt' => $exception->getMessage().' Hubungi administrator untuk meminta reset.']);
         } catch (RuntimeException $exception) {
             return back()->withErrors(['attempt' => $exception->getMessage()]);
         }

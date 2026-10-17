@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class ScoringService
 {
+    public function __construct(protected EssayRubricScorer $essayScorer)
+    {
+    }
+
     public function finalize(Attempt $attempt, bool $timedOut = false): Attempt
     {
         return DB::transaction(function () use ($attempt, $timedOut) {
@@ -19,7 +23,6 @@ class ScoringService
             $autoEarned = 0.0;
             $autoPossible = 0.0;
             $totalPossible = 0.0;
-            $manualPending = false;
 
             foreach ($attempt->attemptQuestions as $attemptQuestion) {
                 $snapshot = $attemptQuestion->question_snapshot_json;
@@ -45,7 +48,15 @@ class ScoringService
                     $awarded = $correct ? $maxPoints : 0.0;
                     $autoEarned += $awarded;
                 } else {
-                    $manualPending = true;
+                    $autoPossible += $maxPoints;
+                    $value = $answer?->answer_json['value'] ?? null;
+                    $awarded = $this->essayScorer->score(
+                        is_string($value) ? $value : null,
+                        is_array($snapshot['scoring_rules'] ?? null) ? $snapshot['scoring_rules'] : null,
+                        $maxPoints
+                    );
+                    $correct = $awarded >= $maxPoints;
+                    $autoEarned += $awarded;
                 }
 
                 if ($answer) {
@@ -54,7 +65,7 @@ class ScoringService
             }
 
             $autoScore = $autoPossible > 0 ? round($autoEarned / $autoPossible * 100, 2) : null;
-            $finalScore = $manualPending || $totalPossible <= 0 ? null : round($autoEarned / $totalPossible * 100, 2);
+            $finalScore = $totalPossible <= 0 ? null : round($autoEarned / $totalPossible * 100, 2);
 
             $attempt->update([
                 'status' => $timedOut ? 'timed_out' : 'submitted',
@@ -66,10 +77,33 @@ class ScoringService
                     $attempt->started_at?->diffInSeconds(now()) ?? 0,
                     $attempt->exam->exam_type === 'tryout' ? 4500 : $attempt->exam->duration_seconds
                 ),
-                'grading_status' => $manualPending ? 'awaiting_review' : 'final',
+                'grading_status' => 'final',
             ]);
 
             return $attempt->fresh();
+        });
+    }
+
+    public function regrade(Attempt $attempt): Attempt
+    {
+        return DB::transaction(function () use ($attempt) {
+            $attempt = Attempt::query()->lockForUpdate()->findOrFail($attempt->id);
+            if (! in_array($attempt->status, ['submitted', 'timed_out'], true)) {
+                return $attempt;
+            }
+
+            $timedOut = $attempt->status === 'timed_out';
+            $submittedAt = $attempt->submitted_at;
+            $durationUsed = $attempt->duration_used_seconds;
+            $attempt->forceFill(['status' => 'in_progress'])->save();
+            $rescored = $this->finalize($attempt, $timedOut);
+
+            $rescored->forceFill([
+                'submitted_at' => $submittedAt,
+                'duration_used_seconds' => $durationUsed,
+            ])->save();
+
+            return $rescored->fresh();
         });
     }
 }

@@ -11,11 +11,18 @@ use RuntimeException;
 
 class AttemptService
 {
+    public function __construct(
+        protected AttemptQuota $quota,
+        protected ScoringService $scoring
+    ) {
+    }
+
     public function start(CandidateUser $candidate, Exam $exam, ?string $sessionCode = null): Attempt
     {
         $sessionCode = $this->normalizeSession($exam, $sessionCode);
 
         return DB::transaction(function () use ($candidate, $exam, $sessionCode) {
+            CandidateUser::query()->whereKey($candidate->id)->lockForUpdate()->firstOrFail();
             $active = Attempt::query()
                 ->where('candidate_user_id', $candidate->id)
                 ->where('exam_id', $exam->id)
@@ -30,7 +37,12 @@ class AttemptService
             }
 
             if ($active) {
-                app(ScoringService::class)->finalize($active, true);
+                $this->scoring->finalize($active, true);
+            }
+
+            $usage = $this->quota->usage($candidate, $exam);
+            if ($usage['remaining'] <= 0) {
+                throw new AttemptLimitReached($usage['limit']);
             }
 
             $links = ExamQuestion::query()

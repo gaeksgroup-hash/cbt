@@ -23,7 +23,7 @@
             <div class="summary-stat"><dt>Jumlah soal</dt><dd>{{ $questionCount }}</dd></div>
             <div class="summary-stat"><dt>Durasi</dt><dd>{{ $exam->exam_type === 'tryout' ? '2 × 75m' : (int) ($exam->duration_seconds / 60).'m' }}</dd></div>
             <div class="summary-stat"><dt>Target</dt><dd>{{ number_format((float) $exam->pass_score, 0) }}</dd></div>
-            <div class="summary-stat"><dt>Attempt</dt><dd>{{ $attemptCount }}</dd></div>
+            <div class="summary-stat"><dt>Kuota dipakai</dt><dd>{{ $attemptQuota['used'] }}/{{ $attemptQuota['limit'] }}</dd></div>
         </dl>
 
         <div class="mt-8 grid gap-8 lg:grid-cols-[1fr_18rem]">
@@ -33,13 +33,13 @@
                     <li><span>01</span><span>Timer dihitung oleh server dan tetap berjalan jika halaman dimuat ulang.</span></li>
                     <li><span>02</span><span>Jawaban disimpan otomatis setelah dipilih atau selesai diketik.</span></li>
                     <li><span>03</span><span>Gunakan penanda untuk soal yang ingin diperiksa kembali sebelum dikumpulkan.</span></li>
-                    <li><span>04</span><span>Jawaban uraian menunggu peninjauan sebelum skor final diterbitkan.</span></li>
+                    <li><span>04</span><span>Semua jawaban dinilai otomatis. Uraian dinilai dari unsur kunci pada pembahasan buku.</span></li>
                 </ol>
             </div>
             <div class="border-l-0 border-stone-300 lg:border-l lg:pl-6">
                 <p class="text-xs font-semibold uppercase tracking-wider text-slate-600">Skor terbaik saat ini</p>
                 <p class="mono-data mt-2 text-4xl font-semibold text-[#062F33]">{{ $bestScore === null ? '-' : number_format((float) $bestScore, 2) }}</p>
-                <p class="mt-2 text-sm leading-6 text-slate-600">Mengulang paket tidak menghapus hasil lama.</p>
+                <p class="mt-2 text-sm leading-6 text-slate-600">Sisa {{ $attemptQuota['remaining'] }} dari {{ $attemptQuota['limit'] }} attempt. Hasil lama tetap tersimpan.</p>
                 <a href="{{ route('sak.exam.demo', $exam) }}" class="button-secondary mt-5 w-full">Lihat contoh navigasi</a>
             </div>
         </div>
@@ -48,6 +48,14 @@
             <div role="alert" class="alert-error mt-6">{{ $errors->first('attempt') }}</div>
         @endif
 
+        @if ($attemptQuota['remaining'] === 0)
+            <div class="alert-warning mt-6 mb-0">
+                Kuota tiga attempt sudah habis. Hubungi administrator untuk meminta reset akses paket ini.
+            </div>
+            <button type="button" class="button-primary mt-5" data-dialog-open="attempt-limit-dialog">Hubungi administrator</button>
+        @endif
+
+        @if ($attemptQuota['remaining'] > 0)
         <div class="mt-8 border-t border-stone-300 pt-7">
             @if ($exam->exam_type === 'tryout')
                 <h2 class="text-xl font-bold text-[#062F33]">Pilih sesi yang akan dimulai</h2>
@@ -71,6 +79,17 @@
                 </form>
             @endif
         </div>
+        @endif
     </section>
 </div>
+
+<dialog id="attempt-limit-dialog" class="attempt-limit-dialog" @if(session('attempt_limit_reached') || $attemptQuota['remaining'] === 0) data-auto-open @endif aria-labelledby="attempt-limit-title">
+    <p class="mono-data text-xs font-semibold text-[#9A5D0B]">KUOTA ATTEMPT HABIS</p>
+    <h2 id="attempt-limit-title" class="mt-3 text-2xl font-bold text-[#062F33]">Hubungi administrator untuk reset</h2>
+    <p class="mt-3 text-sm leading-6 text-slate-600">User ID ini sudah menggunakan tiga attempt untuk paket {{ $exam->code }}. Sampaikan User ID dan kode paket saat menghubungi administrator.</p>
+    <div class="mt-6 flex flex-wrap gap-3">
+        <a class="button-primary" href="https://wa.me/{{ config('cbt.admin_whatsapp') }}?text={{ urlencode('Halo Admin GAEKS, mohon reset attempt CBT untuk User ID '.$candidate->public_id.' pada paket '.$exam->code.'.') }}" target="_blank" rel="noopener">WhatsApp 085608561745</a>
+        <button type="button" class="button-quiet" data-dialog-close>Tutup</button>
+    </div>
+</dialog>
 @endsection

@@ -52,7 +52,7 @@ class SakExamCatalogTest extends TestCase
             $this->assertEquals(65.00,$exam['pass_score']);
             $this->assertEquals('full_explanation',$exam['result_review_mode']);
             $this->assertTrue($exam['is_active']);
-            $this->assertNull($exam['attempt_limit']);
+            $this->assertSame(3, $exam['attempt_limit']);
         }
     }
 
@@ -65,5 +65,6 @@ class SakExamCatalogTest extends TestCase
         $this->assertEquals(60.00,$tryout['pass_score']);
         $this->assertEquals('score_only',$tryout['result_review_mode']);
         $this->assertTrue($tryout['is_active']);
+        $this->assertSame(3, $tryout['attempt_limit']);
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Program;
 use App\Models\Question;
 use App\Models\QuestionBank;
 use App\Models\QuestionOption;
+use App\Support\SakEssayRubrics;
 use Illuminate\Support\Facades\DB;
 use JsonException;
 use RuntimeException;
@@ -109,7 +110,7 @@ class SakBankImporter
                         throw new RuntimeException("Empty option: {$code}.");
                     }
                 }
-            } elseif ($options !== [] || ($type === 'essay_manual' && ($question['answer_key'] ?? null) !== null) ||
+            } elseif ($options !== [] || ($type === 'essay_manual' && (($question['answer_key'] ?? null) !== null || SakEssayRubrics::for((string) $code) === null)) ||
                 ($type === 'numeric' && (! is_array($question['answer_key'] ?? null) ||
                     ! is_numeric($question['answer_key']['expected'] ?? null) ||
                     ! is_numeric($question['answer_key']['tolerance_absolute'] ?? null)))) {
@@ -163,7 +164,7 @@ class SakBankImporter
                     'legal_reference' => $item['legal_reference'],
                     'answer_key_json' => $item['type'] === 'single_choice'
                         ? ['correct_options' => [$item['answer_key']]] : $item['answer_key'],
-                    'scoring_rules_json' => $item['type'] === 'essay_manual' ? ['mode' => 'manual_review'] : null,
+                    'scoring_rules_json' => $item['type'] === 'essay_manual' ? SakEssayRubrics::for($item['code']) : null,
                     'metadata_json' => ['source_title' => $manifest['source_title'] ?? null, 'source_page' => $item['source_page']],
                     'is_active' => true,
                 ];
@@ -174,8 +175,8 @@ class SakBankImporter
                     (float) $question->points !== (float) $item['points'] ||
                     $question->explanation !== $item['explanation'] ||
                     $question->legal_reference !== $item['legal_reference'] ||
-                    $question->answer_key_json !== $attributes['answer_key_json'] ||
-                    $question->scoring_rules_json !== $attributes['scoring_rules_json']) {
+                    $question->answer_key_json != $attributes['answer_key_json'] ||
+                    $question->scoring_rules_json != $attributes['scoring_rules_json']) {
                     throw new RuntimeException('Existing question differs; use an explicit versioned editorial update: '.$item['code']);
                 }
 

@@ -49,6 +49,18 @@ class SakExamSeeder extends Seeder
                         'is_active' => $item['is_active'],
                     ]
                 );
+                $exam->forceFill([
+                    'slug' => $item['slug'],
+                    'title' => $item['title'],
+                    'exam_type' => $item['exam_type'],
+                    'duration_seconds' => $item['duration_seconds'],
+                    'pass_score' => $item['pass_score'],
+                    'attempt_limit' => $item['attempt_limit'],
+                    'randomize_questions' => $item['randomize_questions'],
+                    'randomize_options' => $item['randomize_options'],
+                    'result_review_mode' => $item['result_review_mode'],
+                    'is_active' => $item['is_active'],
+                ])->save();
 
                 $tokenHash = $hasher->hash($item['token']);
 

@@ -4,6 +4,7 @@ return [
     'token_pepper' => env('CBT_TOKEN_PEPPER'),
     'allow_pre_generated_candidates' => (bool) env('CBT_ALLOW_PRE_GENERATED_CANDIDATES', false),
     'preview_only' => (bool) env('CBT_PREVIEW_ONLY', false),
+    'admin_whatsapp' => env('CBT_ADMIN_WHATSAPP', '6285608561745'),
     'gdp_entitlements' => [
         'url' => env('GDP_ENTITLEMENT_URL', 'https://gdp.gaeks.com/api/cbt-entitlements.php'),
         'secret' => env('GDP_ENTITLEMENT_SECRET'),

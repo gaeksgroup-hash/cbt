@@ -42,7 +42,7 @@
                         @foreach ($tryoutPairs as $pair)
                             <tr>
                                 <td class="mono-data font-semibold">#{{ $pair['attempt_no'] }}</td>
-                                <td>{{ $pair['s1']?->score_final === null ? 'Menunggu review' : number_format((float) $pair['s1']->score_final, 2) }}</td>
+                                <td>{{ $pair['s1']?->score_final === null ? 'Belum selesai' : number_format((float) $pair['s1']->score_final, 2) }}</td>
                                 <td>{{ $pair['s2']?->score_final === null ? 'Belum selesai' : number_format((float) $pair['s2']->score_final, 2) }}</td>
                                 <td class="mono-data font-semibold">{{ $pair['score'] === null ? '-' : number_format((float) $pair['score'], 2) }}</td>
                                 <td>{{ ! $pair['is_final'] ? 'Belum final' : ($pair['passed'] ? 'Lulus' : 'Belum lulus') }}</td>
@@ -77,8 +77,8 @@
                             <tr>
                                 <td class="font-semibold text-[#062F33]">{{ $attempt->exam->title }}{{ $attempt->session_code ? ' / '.$attempt->session_code : '' }}</td>
                                 <td class="mono-data">#{{ $attempt->attempt_no }}</td>
-                                <td class="mono-data">{{ $attempt->score_final === null ? 'Menunggu' : number_format((float) $attempt->score_final, 2) }}</td>
-                                <td>{{ $attempt->grading_status === 'final' ? ($attempt->passed ? 'Target tercapai' : 'Perlu diulang') : 'Menunggu review' }}</td>
+                                <td class="mono-data">{{ $attempt->score_final === null ? 'Dihitung ulang' : number_format((float) $attempt->score_final, 2) }}</td>
+                                <td>{{ $attempt->grading_status === 'final' ? ($attempt->passed ? 'Target tercapai' : 'Perlu diulang') : 'Sedang dihitung ulang' }}</td>
                                 <td class="whitespace-nowrap">{{ $attempt->submitted_at?->timezone('Asia/Jakarta')->format('d M Y H:i') }}</td>
                                 <td><a class="font-semibold text-[#07575D] underline underline-offset-4" href="{{ route('sak.attempts.result', $attempt) }}">Lihat hasil</a></td>
                             </tr>

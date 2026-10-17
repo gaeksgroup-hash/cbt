@@ -14,7 +14,7 @@
         <div class="access-intro">
             <p class="document-kicker">Program / SAK</p>
             <h1 id="sak-title" class="display-title">Meja ujian <em>kepabeanan.</em></h1>
-            <p class="lead-copy mt-6">Latihan bab dan tryout dari materi GAEKS Publishing. Sistem mencatat setiap attempt pada Order ID yang digunakan saat masuk.</p>
+            <p class="lead-copy mt-6">Latihan bab dan tryout dari materi GAEKS Publishing. Sistem mencatat setiap attempt pada User ID atau Order ID yang digunakan saat masuk.</p>
 
             <dl class="hero-ledger mt-8" aria-label="Isi program SAK">
                 <div class="ledger-row"><dt>Paket tersedia</dt><dd>{{ $examCount }}</dd></div>
@@ -31,17 +31,17 @@
             <div class="access-panel__body">
                 @if ($candidate)
                     <div class="alert-success">
-                        <strong>Order ID tersambung</strong><br>
+                        <strong>User ID tersambung</strong><br>
                         <span class="mono-data break-all">{{ $candidate->public_id }}</span>
                     </div>
                     <div class="mb-5 flex flex-wrap gap-3">
                         <a class="button-secondary" href="{{ route('sak.results') }}">Lihat seluruh hasil</a>
                         <form method="post" action="{{ route('sak.logout') }}">
                             @csrf
-                            <button class="button-quiet" type="submit">Ganti Order ID</button>
+                            <button class="button-quiet" type="submit">Ganti User ID</button>
                         </form>
                     </div>
-                    <p class="mb-5 text-sm leading-6 text-slate-600">Masukkan token buku untuk membuka paket lain yang tercakup dalam pembelian ini.</p>
+                    <p class="mb-5 text-sm leading-6 text-slate-600">Masukkan token buku untuk membuka paket lain yang tercakup dalam akses ini.</p>
                 @endif
 
                 @if ($errors->has('access'))
@@ -57,12 +57,12 @@
                         @csrf
                         <div class="form-field">
                             <label for="order_id">
-                                <span>Order ID pembelian</span>
+                                <span>User ID / Order ID</span>
                                 <small>Wajib</small>
                             </label>
                             <input id="order_id" name="order_id" value="{{ old('order_id', $candidate?->public_id) }}" autocomplete="off" autocapitalize="characters" spellcheck="false" required maxlength="40" placeholder="GDP-20261017123456-ABCD1234" class="form-control mono-data uppercase">
                             @error('order_id')<p role="alert" class="mt-2 text-sm text-red-800">{{ $message }}</p>@enderror
-                            <p class="field-note">Salin nomor referensi pada email status pembayaran GDP.</p>
+                            <p class="field-note">Gunakan Order ID dari email GDP atau User ID CBT yang dibuat administrator.</p>
                         </div>
 
                         <div class="form-field">
@@ -79,7 +79,7 @@
                     </form>
                 @endif
 
-                <p class="mt-5 border-t border-stone-300 pt-4 text-xs leading-5 text-slate-600">Akses diberikan hanya jika pembayaran berstatus dibayar dan buku dalam transaksi tersebut memuat paket SAK. Data nama serta email pembeli tidak dipindahkan ke CBT.</p>
+                <p class="mt-5 border-t border-stone-300 pt-4 text-xs leading-5 text-slate-600">Order ID GDP aktif jika pembayaran berstatus dibayar dan bukunya memuat paket SAK. User ID manual diberikan langsung oleh administrator CBT.</p>
             </div>
         </div>
     </section>
@@ -93,10 +93,10 @@
             </div>
         </div>
         <div class="process-line">
-            <div class="process-step"><span class="process-step__no">ORDER ID</span><strong>Dikirim lewat email transaksi</strong><p>Nomor dimulai dengan GDP- dan menjadi identitas riwayat ujian Anda.</p></div>
+            <div class="process-step"><span class="process-step__no">USER ID</span><strong>Dikirim atau diberikan kepada Anda</strong><p>Gunakan Order ID dari email GDP atau User ID yang diberikan administrator.</p></div>
             <div class="process-step"><span class="process-step__no">TOKEN</span><strong>Tercantum pada materi buku</strong><p>Token memilih paket bab atau tryout yang hendak dikerjakan.</p></div>
-            <div class="process-step"><span class="process-step__no">COCOK</span><strong>Buku menentukan program</strong><p>Order ID hanya membuka ujian yang terhubung dengan buku pada transaksi.</p></div>
-            <div class="process-step"><span class="process-step__no">HASIL</span><strong>Tersimpan per Order ID</strong><p>Skor lama tetap ada meski ujian dikerjakan ulang.</p></div>
+            <div class="process-step"><span class="process-step__no">COCOK</span><strong>Akses menentukan program</strong><p>User ID hanya membuka ujian yang terhubung dengan buku atau hak aksesnya.</p></div>
+            <div class="process-step"><span class="process-step__no">HASIL</span><strong>Tersimpan per User ID</strong><p>Skor lama tetap ada meski ujian dikerjakan ulang.</p></div>
         </div>
     </section>
 

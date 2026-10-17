@@ -35,8 +35,8 @@
             </div>
         @else
             <div class="alert-warning mt-8 mb-0">
-                <strong>Jawaban uraian sedang menunggu peninjauan.</strong><br>
-                Nilai objektif sementara: {{ $attempt->score_auto === null ? 'belum tersedia' : number_format((float) $attempt->score_auto, 2).' dari 100' }}. Skor final diterbitkan setelah peninjauan selesai.
+                <strong>Nilai sedang dihitung ulang.</strong><br>
+                Muat ulang halaman ini beberapa saat lagi. Tidak diperlukan peninjauan manual.
             </div>
         @endif
 
@@ -51,7 +51,7 @@
                     </dl>
                     <p class="mt-4 text-sm font-semibold {{ $tryoutSummary['passed'] ? 'text-emerald-800' : 'text-amber-900' }}">{{ $tryoutSummary['passed'] ? 'Lulus simulasi SAK.' : 'Belum lulus. Nilai gabungan minimal 60 dan setiap sesi minimal 40.' }}</p>
                 @else
-                    <p class="mt-2 text-sm leading-6 text-slate-600">Nilai gabungan diterbitkan setelah Sesi 1 selesai ditinjau dan Sesi 2 selesai dinilai.</p>
+                    <p class="mt-2 text-sm leading-6 text-slate-600">Nilai gabungan tersedia setelah kedua sesi selesai dikerjakan dan dinilai otomatis.</p>
                 @endif
             </div>
         @endif
@@ -82,10 +82,51 @@
                 <thead><tr><th>Attempt</th><th>Status</th><th>Skor</th><th>Tanggal</th></tr></thead>
                 <tbody>
                     @foreach ($history as $item)
-                        <tr><td class="mono-data font-semibold">#{{ $item->attempt_no }}</td><td>{{ $item->grading_status === 'final' ? ($item->passed ? 'Target tercapai' : 'Perlu diulang') : 'Menunggu review' }}</td><td class="mono-data">{{ $item->score_final === null ? '-' : number_format((float) $item->score_final, 2) }}</td><td>{{ $item->submitted_at?->timezone('Asia/Jakarta')->format('d M Y H:i') }}</td></tr>
+                        <tr><td class="mono-data font-semibold">#{{ $item->attempt_no }}</td><td>{{ $item->grading_status === 'final' ? ($item->passed ? 'Target tercapai' : 'Perlu diulang') : 'Sedang dihitung ulang' }}</td><td class="mono-data">{{ $item->score_final === null ? '-' : number_format((float) $item->score_final, 2) }}</td><td>{{ $item->submitted_at?->timezone('Asia/Jakarta')->format('d M Y H:i') }}</td></tr>
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    </section>
+
+    <section aria-labelledby="answer-review-heading">
+        <div class="section-rule">
+            <span class="section-number">02</span>
+            <div>
+                <h2 id="answer-review-heading" class="section-heading">Pembahasan jawaban</h2>
+                <p class="section-summary">Bandingkan jawaban Anda dengan kunci dan penjelasan yang digunakan sistem untuk menghitung skor.</p>
+            </div>
+        </div>
+        <div class="mt-6 space-y-5">
+            @foreach ($attempt->attemptQuestions as $index => $attemptQuestion)
+                @php
+                    $snapshot = $attemptQuestion->question_snapshot_json;
+                    $answer = $attemptQuestion->answer;
+                    $type = $snapshot['type'] ?? '';
+                    $selected = $answer?->answer_json['selected'] ?? null;
+                    $value = $answer?->answer_json['value'] ?? null;
+                    $correctKey = $snapshot['answer_key']['correct_options'][0] ?? null;
+                    $expected = $snapshot['answer_key']['expected'] ?? null;
+                @endphp
+                <article class="border border-stone-400 bg-white p-5 sm:p-6">
+                    <div class="flex flex-wrap items-start justify-between gap-3">
+                        <div><p class="mono-data text-xs font-semibold text-[#9A5D0B]">SOAL {{ $index + 1 }}</p><h3 class="mt-2 font-bold text-[#062F33]">{{ $snapshot['title'] ?: ($snapshot['code'] ?? 'Pembahasan') }}</h3></div>
+                        <span class="admin-status {{ $answer?->is_correct ? 'admin-status--active' : 'admin-status--suspended' }}">{{ number_format((float) ($answer?->awarded_points ?? 0), 2) }} / {{ number_format((float) $attemptQuestion->max_points, 2) }}</span>
+                    </div>
+                    <div class="mt-4 text-sm leading-6 text-slate-700">
+                        @if ($type === 'single_choice')
+                            <p><strong>Jawaban Anda:</strong> {{ $selected ?: 'Tidak dijawab' }}</p>
+                            <p><strong>Kunci:</strong> {{ $correctKey ?: '-' }}</p>
+                        @elseif ($type === 'numeric')
+                            <p><strong>Jawaban Anda:</strong> {{ $value ?? 'Tidak dijawab' }}</p>
+                            <p><strong>Nilai acuan:</strong> {{ $expected ?? '-' }}</p>
+                        @else
+                            <p><strong>Penilaian:</strong> Skor diberikan untuk setiap unsur kunci yang ditemukan pada jawaban uraian.</p>
+                        @endif
+                        <p class="mt-3"><strong>Pembahasan:</strong> {{ $snapshot['explanation'] ?: 'Pembahasan belum tersedia.' }}</p>
+                    </div>
+                </article>
+            @endforeach
         </div>
     </section>
 </div>
