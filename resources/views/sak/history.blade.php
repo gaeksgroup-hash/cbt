@@ -3,38 +3,49 @@
 @section('title', 'Riwayat Hasil')
 
 @section('content')
-<div class="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
-    <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-            <p class="text-sm font-semibold text-cyan-800">Ringkasan User ID</p>
-            <h1 class="text-3xl font-bold text-[#012E34]">{{ $candidate->public_id }}</h1>
-            <p class="mt-2 text-sm text-slate-600">Semua attempt disimpan. Mengulang ujian tidak menghapus hasil lama.</p>
-        </div>
-        <a href="{{ route('sak.landing') }}" class="inline-flex min-h-11 items-center font-semibold text-cyan-800 underline underline-offset-4">Buka paket lain</a>
-    </div>
+<div class="document-page">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="{{ route('sak.landing') }}">Ujian SAK</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">Riwayat hasil</span>
+    </nav>
 
-    <section class="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" aria-label="Total hasil User ID">
-        <div class="rounded-xl border border-slate-200 bg-white p-5"><p class="text-xs font-semibold text-slate-600">Total attempt</p><p class="mt-2 text-3xl font-bold text-[#012E34]">{{ $totalAttempts }}</p></div>
-        <div class="rounded-xl border border-slate-200 bg-white p-5"><p class="text-xs font-semibold text-slate-600">Paket selesai</p><p class="mt-2 text-3xl font-bold text-[#012E34]">{{ $completedExams }}</p></div>
-        <div class="rounded-xl border border-slate-200 bg-white p-5"><p class="text-xs font-semibold text-slate-600">Total best score</p><p class="mt-2 text-3xl font-bold text-[#012E34]">{{ number_format($totalBestScore, 2) }}</p></div>
-        <div class="rounded-xl border border-slate-200 bg-white p-5"><p class="text-xs font-semibold text-slate-600">Rata-rata best score</p><p class="mt-2 text-3xl font-bold text-[#012E34]">{{ $averageBestScore === null ? '-' : number_format($averageBestScore, 2) }}</p></div>
-    </section>
+    <header class="grid gap-6 border-b border-stone-400 pb-7 md:grid-cols-[1fr_auto] md:items-end">
+        <div>
+            <p class="document-kicker">Rekap per Order ID</p>
+            <h1 class="mono-data mt-4 break-all text-2xl font-semibold tracking-tight text-[#062F33] sm:text-4xl">{{ $candidate->public_id }}</h1>
+            <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-600">Semua attempt tetap disimpan. Mengerjakan ulang tidak mengganti atau menghapus hasil sebelumnya.</p>
+        </div>
+        <a href="{{ route('sak.landing') }}" class="button-secondary">Buka paket lain</a>
+    </header>
+
+    <dl class="summary-grid" aria-label="Ringkasan hasil Order ID">
+        <div class="summary-stat"><dt>Total attempt</dt><dd>{{ $totalAttempts }}</dd></div>
+        <div class="summary-stat"><dt>Paket selesai</dt><dd>{{ $completedExams }}</dd></div>
+        <div class="summary-stat"><dt>Total skor terbaik</dt><dd>{{ number_format($totalBestScore, 2) }}</dd></div>
+        <div class="summary-stat"><dt>Rata-rata terbaik</dt><dd>{{ $averageBestScore === null ? '-' : number_format($averageBestScore, 2) }}</dd></div>
+    </dl>
 
     @if ($tryoutPairs->isNotEmpty())
-        <section class="mt-8">
-            <h2 class="text-xl font-bold text-[#012E34]">Rekap Try Out SAK</h2>
-            <p class="mt-1 text-sm text-slate-600">Sesi 1 dan Sesi 2 masing-masing berbobot 50%. Syarat lulus: nilai gabungan minimal 60 dan setiap sesi minimal 40.</p>
-            <div class="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white">
-                <table class="min-w-full text-left text-sm">
-                    <thead class="bg-slate-100 text-slate-700"><tr><th class="px-4 py-3">Attempt</th><th class="px-4 py-3">Sesi 1</th><th class="px-4 py-3">Sesi 2</th><th class="px-4 py-3">Gabungan</th><th class="px-4 py-3">Status</th></tr></thead>
-                    <tbody class="divide-y divide-slate-200">
+        <section aria-labelledby="tryout-history-heading">
+            <div class="section-rule">
+                <span class="section-number">01</span>
+                <div>
+                    <h2 id="tryout-history-heading" class="section-heading">Rekap Tryout SAK</h2>
+                    <p class="section-summary">Sesi 1 dan Sesi 2 masing-masing berbobot 50%. Target gabungan minimal 60 dengan nilai tiap sesi minimal 40.</p>
+                </div>
+            </div>
+            <div class="table-shell mt-6">
+                <table class="data-table">
+                    <thead><tr><th>Attempt</th><th>Sesi 1</th><th>Sesi 2</th><th>Gabungan</th><th>Status</th></tr></thead>
+                    <tbody>
                         @foreach ($tryoutPairs as $pair)
                             <tr>
-                                <td class="px-4 py-3 font-semibold">#{{ $pair['attempt_no'] }}</td>
-                                <td class="px-4 py-3">{{ $pair['s1']?->score_final === null ? 'Menunggu review' : number_format((float) $pair['s1']->score_final, 2) }}</td>
-                                <td class="px-4 py-3">{{ $pair['s2']?->score_final === null ? 'Belum selesai' : number_format((float) $pair['s2']->score_final, 2) }}</td>
-                                <td class="px-4 py-3 font-bold">{{ $pair['score'] === null ? '-' : number_format((float) $pair['score'], 2) }}</td>
-                                <td class="px-4 py-3">{{ ! $pair['is_final'] ? 'Belum final' : ($pair['passed'] ? 'Lulus' : 'Belum lulus') }}</td>
+                                <td class="mono-data font-semibold">#{{ $pair['attempt_no'] }}</td>
+                                <td>{{ $pair['s1']?->score_final === null ? 'Menunggu review' : number_format((float) $pair['s1']->score_final, 2) }}</td>
+                                <td>{{ $pair['s2']?->score_final === null ? 'Belum selesai' : number_format((float) $pair['s2']->score_final, 2) }}</td>
+                                <td class="mono-data font-semibold">{{ $pair['score'] === null ? '-' : number_format((float) $pair['score'], 2) }}</td>
+                                <td>{{ ! $pair['is_final'] ? 'Belum final' : ($pair['passed'] ? 'Lulus' : 'Belum lulus') }}</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -43,26 +54,33 @@
         </section>
     @endif
 
-    <section class="mt-8">
-        <h2 class="text-xl font-bold text-[#012E34]">Riwayat attempt</h2>
+    <section aria-labelledby="attempt-history-heading">
+        <div class="section-rule">
+            <span class="section-number">{{ $tryoutPairs->isNotEmpty() ? '02' : '01' }}</span>
+            <div>
+                <h2 id="attempt-history-heading" class="section-heading">Riwayat attempt</h2>
+                <p class="section-summary">Urutan pengerjaan, status penilaian, dan skor tiap paket.</p>
+            </div>
+        </div>
+
         @if ($attempts->isEmpty())
-            <div class="mt-4 rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
-                <p class="font-semibold text-slate-800">Belum ada hasil ujian.</p>
-                <p class="mt-1 text-sm text-slate-600">Masukkan token bab untuk membuka panduan dan memulai attempt pertama.</p>
+            <div class="mt-6 border border-dashed border-stone-500 bg-[#FBF9F3] p-8 text-center">
+                <p class="font-semibold text-[#062F33]">Belum ada hasil ujian.</p>
+                <p class="mt-2 text-sm text-slate-600">Masukkan token buku untuk membuka panduan dan memulai attempt pertama.</p>
             </div>
         @else
-            <div class="mt-4 overflow-x-auto rounded-xl border border-slate-200 bg-white">
-                <table class="min-w-full text-left text-sm">
-                    <thead class="bg-slate-100 text-slate-700"><tr><th class="px-4 py-3">Paket</th><th class="px-4 py-3">Attempt</th><th class="px-4 py-3">Skor</th><th class="px-4 py-3">Status</th><th class="px-4 py-3">Tanggal</th><th class="px-4 py-3"><span class="sr-only">Aksi</span></th></tr></thead>
-                    <tbody class="divide-y divide-slate-200">
+            <div class="table-shell mt-6">
+                <table class="data-table">
+                    <thead><tr><th>Paket</th><th>Attempt</th><th>Skor</th><th>Status</th><th>Tanggal</th><th><span class="sr-only">Aksi</span></th></tr></thead>
+                    <tbody>
                         @foreach ($attempts as $attempt)
                             <tr>
-                                <td class="px-4 py-3 font-semibold text-[#012E34]">{{ $attempt->exam->title }}{{ $attempt->session_code ? ' · '.$attempt->session_code : '' }}</td>
-                                <td class="px-4 py-3">#{{ $attempt->attempt_no }}</td>
-                                <td class="px-4 py-3">{{ $attempt->score_final === null ? 'Menunggu' : number_format((float) $attempt->score_final, 2) }}</td>
-                                <td class="px-4 py-3">{{ $attempt->grading_status === 'final' ? ($attempt->passed ? 'Target tercapai' : 'Perlu diulang') : 'Menunggu review' }}</td>
-                                <td class="px-4 py-3 whitespace-nowrap">{{ $attempt->submitted_at?->timezone('Asia/Jakarta')->format('d M Y H:i') }}</td>
-                                <td class="px-4 py-3"><a class="font-semibold text-cyan-800 underline" href="{{ route('sak.attempts.result', $attempt) }}">Lihat</a></td>
+                                <td class="font-semibold text-[#062F33]">{{ $attempt->exam->title }}{{ $attempt->session_code ? ' / '.$attempt->session_code : '' }}</td>
+                                <td class="mono-data">#{{ $attempt->attempt_no }}</td>
+                                <td class="mono-data">{{ $attempt->score_final === null ? 'Menunggu' : number_format((float) $attempt->score_final, 2) }}</td>
+                                <td>{{ $attempt->grading_status === 'final' ? ($attempt->passed ? 'Target tercapai' : 'Perlu diulang') : 'Menunggu review' }}</td>
+                                <td class="whitespace-nowrap">{{ $attempt->submitted_at?->timezone('Asia/Jakarta')->format('d M Y H:i') }}</td>
+                                <td><a class="font-semibold text-[#07575D] underline underline-offset-4" href="{{ route('sak.attempts.result', $attempt) }}">Lihat hasil</a></td>
                             </tr>
                         @endforeach
                     </tbody>

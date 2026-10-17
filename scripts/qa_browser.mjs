@@ -2,11 +2,13 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import process from 'node:process';
 
 const cdpPort = process.env.CBT_CDP_PORT ?? '9223';
+const baseUrl = (process.env.CBT_BASE_URL ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
 const outputDir = process.env.CBT_QA_OUTPUT ?? 'storage/app/qa';
 const pages = await fetch(`http://127.0.0.1:${cdpPort}/json`).then((response) => response.json());
 const page = pages.find((candidate) => candidate.type === 'page' && candidate.url === 'about:blank')
     ?? pages.find((candidate) => candidate.type === 'page');
 if (!page) throw new Error('No browser page is available for QA.');
+
 const socket = new WebSocket(page.webSocketDebuggerUrl);
 const pending = new Map();
 let nextId = 1;
@@ -45,9 +47,10 @@ async function waitFor(expression, timeout = 10000) {
     throw new Error(`Timed out waiting for: ${expression}`);
 }
 
-async function navigate(url) {
-    await send('Page.navigate', { url });
+async function navigate(path) {
+    await send('Page.navigate', { url: `${baseUrl}${path}` });
     await waitFor(`document.readyState === 'complete'`);
+    await waitFor(`document.fonts?.status === 'loaded'`);
 }
 
 async function screenshot(name) {
@@ -55,51 +58,37 @@ async function screenshot(name) {
     await writeFile(`${outputDir}/${name}.png`, Buffer.from(data, 'base64'));
 }
 
+async function inspect(path, name) {
+    await navigate(path);
+    await screenshot(name);
+    return evaluate(`({
+        path: location.pathname,
+        title: document.title,
+        h1: document.querySelector('h1')?.textContent.trim(),
+        viewportWidth: window.innerWidth,
+        contentWidth: document.documentElement.scrollWidth,
+        hasHorizontalOverflow: document.documentElement.scrollWidth > window.innerWidth,
+        orderFieldPresent: Boolean(document.querySelector('#order_id'))
+    })`);
+}
+
 await mkdir(outputDir, { recursive: true });
 await send('Page.enable');
 await send('Runtime.enable');
-await send('Emulation.setDeviceMetricsOverride', { width: 1365, height: 900, deviceScaleFactor: 1, mobile: false });
 
-await navigate('http://127.0.0.1:8000/sak');
-await screenshot('01-access-desktop');
-await evaluate(`(() => {
-    document.querySelector('#user_id').value = 'GSAK_CBT001';
-    document.querySelector('#token').value = 'SAK-BAB03-UUBC';
-    document.querySelector('form').requestSubmit();
-    return true;
-})()`);
-await waitFor(`location.pathname.includes('/guide')`);
-await screenshot('02-guide-desktop');
-await evaluate(`(() => {
-    const form = document.querySelector('form[action*="/start"]');
-    form.querySelector('[name="understood"]').checked = true;
-    form.requestSubmit();
-    return true;
-})()`);
-await waitFor(`location.pathname.includes('/attempts/')`);
-await waitFor(`document.querySelector('#timer')?.textContent !== '--:--'`);
-await screenshot('03-attempt-desktop');
+const report = {};
+await send('Emulation.setDeviceMetricsOverride', { width: 1365, height: 900, deviceScaleFactor: 1, mobile: false });
+report.landingDesktop = await inspect('/', 'landing-desktop');
+report.sakDesktop = await inspect('/sak', 'sak-desktop');
 
 await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
-await screenshot('04-attempt-mobile');
-await evaluate(`document.querySelector('input[type="radio"]')?.click()`);
-await waitFor(`document.querySelector('#save-state')?.textContent === 'Tersimpan'`);
-await evaluate(`document.querySelector('#open-submit-side').click()`);
-await screenshot('05-submit-dialog-mobile');
-await evaluate(`document.querySelector('#submit-form').requestSubmit()`);
-await waitFor(`location.pathname.endsWith('/result')`);
-await evaluate(`window.scrollTo(0, 0)`);
-await screenshot('06-result-mobile');
+report.landingMobile = await inspect('/', 'landing-mobile');
+report.sakMobile = await inspect('/sak', 'sak-mobile');
 
-await send('Emulation.setDeviceMetricsOverride', { width: 1365, height: 900, deviceScaleFactor: 1, mobile: false });
-await navigate('http://127.0.0.1:8000/sak/results');
-await screenshot('07-history-desktop');
-
-const summary = await evaluate(`({
-    path: location.pathname,
-    title: document.title,
-    h1: document.querySelector('h1')?.textContent.trim(),
-    body: document.body.innerText.slice(0, 1000)
-})`);
-process.stdout.write(`${JSON.stringify(summary, null, 2)}\n`);
+const failures = Object.entries(report).filter(([, item]) => item.hasHorizontalOverflow);
+process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 socket.close();
+
+if (failures.length > 0) {
+    throw new Error(`Horizontal overflow detected in: ${failures.map(([name]) => name).join(', ')}`);
+}

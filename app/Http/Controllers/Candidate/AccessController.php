@@ -4,37 +4,61 @@ namespace App\Http\Controllers\Candidate;
 
 use App\Http\Controllers\Controller;
 use App\Models\CandidateUser;
+use App\Services\CBT\EntitlementVerificationUnavailable;
 use App\Services\CBT\ExamTokenResolver;
+use App\Services\CBT\GdpOrderEntitlementVerifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class AccessController extends Controller
 {
-    public function store(Request $request, ExamTokenResolver $resolver): RedirectResponse
+    public function store(
+        Request $request,
+        ExamTokenResolver $resolver,
+        GdpOrderEntitlementVerifier $entitlements
+    ): RedirectResponse
     {
         if (config('cbt.preview_only')) {
             return redirect()->route('sak.landing', status: 303);
         }
 
         $request->validate([
-            'user_id' => ['required', 'string', 'max:40'],
+            'order_id' => ['required', 'string', 'max:40'],
             'token' => ['required', 'string', 'max:100'],
         ]);
 
-        $id = strtoupper(trim($request->input('user_id')));
-        $candidate = CandidateUser::where('public_id', $id)->first();
+        $orderId = $entitlements->normalizeOrderId($request->input('order_id'));
         $exam = $resolver->resolve($request->input('token'));
-        $allowed = $candidate && ($candidate->status === 'active' ||
-            ($candidate->status === 'pre_generated' && config('cbt.allow_pre_generated_candidates')));
+        $entitlementKey = strtoupper(trim((string) $exam?->program?->entitlement_key));
 
-        if (! $allowed || ! $exam || $exam->program?->slug !== 'sak') {
-            return back()->withInput($request->only('user_id'))
-                ->withErrors(['access' => 'User ID atau token tidak valid / tidak aktif. Periksa kembali data akses Anda.']);
+        if (! $exam || $exam->program?->slug !== 'sak' || $entitlementKey === '') {
+            return $this->invalidAccess($request);
         }
+
+        try {
+            if (! $entitlements->allows($orderId, $entitlementKey)) {
+                return $this->invalidAccess($request);
+            }
+        } catch (EntitlementVerificationUnavailable) {
+            return back()->withInput($request->only('order_id'))
+                ->withErrors(['access' => 'Verifikasi pembelian GDP sedang tidak tersedia. Coba kembali beberapa menit lagi.']);
+        }
+
+        $candidate = CandidateUser::firstOrNew(['public_id' => $orderId]);
+        if ($candidate->exists && $candidate->status === 'suspended') {
+            return $this->invalidAccess($request);
+        }
+        $candidate->forceFill([
+            'status' => 'active',
+            'activated_at' => $candidate->activated_at ?? now(),
+        ])->save();
 
         $request->session()->regenerate();
         $request->session()->put('cbt.candidate_user_id', $candidate->id);
         $request->session()->put('cbt.exam_id', $exam->id);
+        $request->session()->put('cbt.order_reference', $orderId);
+        $request->session()->put('cbt.entitlement_key', $entitlementKey);
+        $request->session()->put('cbt.entitlement_verified_at', now()->timestamp);
 
         return redirect()->route('sak.exam.guide', ['exam' => $exam->slug], 303);
     }
@@ -45,5 +69,11 @@ class AccessController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('sak.landing');
+    }
+
+    private function invalidAccess(Request $request): RedirectResponse
+    {
+        return back()->withInput($request->only('order_id'))
+            ->withErrors(['access' => 'Order ID atau token buku tidak cocok dengan akses ujian ini.']);
     }
 }

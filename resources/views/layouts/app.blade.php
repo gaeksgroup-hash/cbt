@@ -4,80 +4,55 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#062F33">
 
-    <title>@yield('title', 'GAEKS CBT') | Computer-Based Testing Platform</title>
+    <title>@yield('title', 'GAEKS CBT') | Platform Ujian GAEKS</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
         <script src="https://cdn.tailwindcss.com"></script>
-        <script>
-            tailwind.config = {
-                theme: {
-                    extend: {
-                        colors: {
-                            brand: {
-                                primary: '#012E34',
-                                secondary: '#0F4C5C',
-                                accent: '#0891B2',
-                                surface: '#FFFFFF',
-                                bg: '#F8FAFC',
-                                dark: '#0B1F24',
-                            }
-                        }
-                    }
-                }
-            }
-        </script>
-        <style>
-            body { font-family: 'Inter', sans-serif; }
-        </style>
+        <link rel="stylesheet" href="{{ asset('resources/css/app.css') }}">
     @endif
 </head>
-<body class="min-h-full flex flex-col bg-[#F8FAFC] text-slate-800 antialiased">
-    <header class="border-b border-slate-200 bg-white sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center space-x-3">
-                    <a href="{{ route('landing') }}" class="flex items-center space-x-3 focus:outline-none focus:ring-2 focus:ring-[#0891B2] rounded-md">
-                        <div class="w-10 h-10 rounded-lg bg-[#012E34] flex items-center justify-center text-white font-bold text-lg tracking-wider shadow-sm">
-                            G
-                        </div>
-                        <div>
-                            <span class="text-lg font-bold text-[#012E34] tracking-tight block leading-tight">GAEKS CBT</span>
-                            <span class="text-xs text-slate-500 font-medium block leading-none">Assessment Platform</span>
-                        </div>
-                    </a>
-                </div>
+<body class="cbt-shell">
+    <a class="skip-link" href="#main-content">Lewati ke konten utama</a>
 
-                <nav aria-label="Navigasi utama" class="hidden sm:flex items-center space-x-4">
-                    <a href="{{ route('landing') }}" class="text-sm font-medium text-slate-600 hover:text-[#012E34] transition-colors">Platform</a>
-                    <a href="{{ route('sak.landing') }}" class="text-sm font-medium text-slate-600 hover:text-[#012E34] transition-colors">Program SAK</a>
-                    <a href="{{ route('health') }}" target="_blank" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
-                        Status sistem
-                    </a>
-                </nav>
-                <a href="{{ route('sak.landing') }}" class="sm:hidden inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#012E34] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891B2]">Program SAK</a>
-            </div>
+    <header class="site-header">
+        <div class="site-header__inner">
+            <a href="{{ route('landing') }}" class="brand-lockup" aria-label="Beranda GAEKS CBT">
+                <span class="brand-lockup__mark" aria-hidden="true">G</span>
+                <span class="brand-lockup__copy">
+                    <strong>GAEKS CBT</strong>
+                    <small>Exam desk</small>
+                </span>
+            </a>
+
+            <nav class="site-nav" aria-label="Navigasi utama">
+                <a href="{{ route('landing') }}" @class(['is-current' => request()->routeIs('landing')])>Platform</a>
+                <a href="{{ route('sak.landing') }}" @class(['is-current' => request()->routeIs('sak.*')])>Ujian SAK</a>
+                <a href="{{ route('health') }}" class="site-nav__status">Status</a>
+            </nav>
         </div>
     </header>
 
-    <main class="flex-1">
+    <main id="main-content" class="site-main">
         @yield('content')
     </main>
 
-    <footer class="border-t border-slate-200 bg-white py-8 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 text-xs text-slate-500">
-            <p>&copy; {{ date('Y') }} GAEKS GROUP. Seluruh hak cipta dilindungi undang-undang.</p>
-            <div class="flex items-center space-x-6">
-                <span class="text-slate-400">cbt.gaeks.com</span>
-                <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>{{ config('cbt.preview_only') ? 'Pratinjau pengembangan' : 'Platform ujian aktif' }}</span>
+    <footer class="site-footer">
+        <div class="site-footer__inner">
+            <div>
+                <strong>GAEKS CBT</strong>
+                <p>Ujian berbasis buku dan transaksi terverifikasi.</p>
+            </div>
+            <div class="site-footer__meta">
+                <span>&copy; {{ date('Y') }} GAEKS GROUP</span>
+                <span>{{ config('cbt.preview_only') ? 'Mode pratinjau' : 'Platform ujian aktif' }}</span>
             </div>
         </div>
     </footer>

@@ -21,8 +21,12 @@ class CandidateSession
 
     public function exam(Request $request, Exam $exam): CandidateUser
     {
+        $verifiedAt = (int) $request->session()->get('cbt.entitlement_verified_at', 0);
+        $ttlSeconds = max(5, (int) config('cbt.gdp_entitlements.session_ttl_minutes', 120)) * 60;
         abort_unless(
             $request->session()->get('cbt.exam_id') === $exam->id &&
+            $request->session()->get('cbt.entitlement_key') === $exam->program?->entitlement_key &&
+            $verifiedAt > 0 && now()->timestamp - $verifiedAt <= $ttlSeconds &&
             $exam->is_active &&
             $exam->program?->slug === 'sak',
             404

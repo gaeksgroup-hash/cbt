@@ -8,6 +8,8 @@
 **Bahasa UI awal:** Bahasa Indonesia  
 **Prinsip utama:** server-owned data, deterministic exam engine, retry-safe, history-preserving, dan tidak bergantung pada AI untuk penilaian inti.
 
+> **Amandemen akses, 17 Oktober 2026:** User ID pra-generasi pada versi 1.0 digantikan oleh Order ID pembelian e-book GDP untuk akses baru. Order ID harus berstatus `paid` dan buku pada transaksi harus memiliki kode entitlement yang sama dengan program CBT. Token buku tetap menjadi exam router di dalam program. Ketentuan lama tentang 10.000 User ID hanya dipertahankan sebagai catatan skema dan kompatibilitas histori. Kontrak operasional terbaru ada di `GDP_ORDER_ACCESS.md`.
+
 ---
 
 # 1. Ringkasan Produk
@@ -19,10 +21,10 @@
 Program `/sak` dipakai untuk pembelajaran mandiri dan simulasi Ujian Sertifikasi Ahli Kepabeanan.
 
 Peserta wajib masuk menggunakan:
-1. **User ID** yang sudah tersedia di database.
+1. **Order ID GDP** dari email transaksi e-book yang sudah dibayar.
 2. **Token ujian**.
 
-Token berfungsi sebagai **exam router**. Setelah User ID dan token tervalidasi di server, sistem menentukan paket ujian yang sesuai lalu melakukan redirect ke halaman panduan ujian tersebut.
+Order ID menentukan program yang dibeli, sedangkan token berfungsi sebagai **exam router** di dalam program tersebut. Setelah keduanya tervalidasi di server, sistem menentukan paket ujian yang sesuai lalu melakukan redirect ke halaman panduan ujian tersebut.
 
 Platform wajib mendukung:
 - opening/welcome;

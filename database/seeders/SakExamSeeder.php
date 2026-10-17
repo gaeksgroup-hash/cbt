@@ -28,6 +28,7 @@ class SakExamSeeder extends Seeder
                     'is_active' => $programData['is_active'],
                 ]
             );
+            $program->forceFill(['entitlement_key' => 'SAK'])->save();
 
             foreach (SakExamCatalog::all() as $item) {
                 $exam = Exam::firstOrCreate(

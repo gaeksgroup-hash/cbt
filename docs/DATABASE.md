@@ -1,6 +1,8 @@
 # DATABASE ARCHITECTURE & SCHEMA SPECIFICATION
 ## GAEKS CBT Platform — cbt.gaeks.com
 
+> Pembaruan 17 Oktober 2026: akses kandidat baru memakai Order ID GDP yang terverifikasi. `candidate_users.public_id` menyimpan Order ID tersebut, sementara `programs.entitlement_key` menghubungkan program CBT dengan e-book yang dibeli. Lihat `GDP_ORDER_ACCESS.md` untuk kontrak integrasi dan urutan rilis.
+
 **Version:** 1.0  
 **Phase:** TASK 02 — Database Foundation  
 **Source of Truth:** `docs/PRD_CBT_GAEKS.md`  

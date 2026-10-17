@@ -11,6 +11,7 @@ use App\Models\Question;
 use App\Models\QuestionBank;
 use Database\Seeders\SakExamSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AttemptLifecycleTest extends TestCase
@@ -19,12 +20,19 @@ class AttemptLifecycleTest extends TestCase
 
     private CandidateUser $candidate;
     private Exam $exam;
+    private const ORDER_ID = 'GDP-20261017123045-A1B2C3D4';
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->seed(SakExamSeeder::class);
-        $this->candidate = CandidateUser::create(['public_id' => 'GSAK_CBT001', 'status' => 'active']);
+        config()->set('cbt.gdp_entitlements.url', 'https://gdp.test/api/cbt-entitlements.php');
+        config()->set('cbt.gdp_entitlements.secret', 'test-secret');
+        Http::fake(Http::response([
+            'ok' => true,
+            'data' => ['orderId' => self::ORDER_ID, 'status' => 'paid', 'entitlementKeys' => ['SAK']],
+        ]));
+        $this->candidate = CandidateUser::create(['public_id' => self::ORDER_ID, 'status' => 'active']);
         $this->exam = Exam::where('code', 'SAK-BAB03')->firstOrFail();
         $bank = QuestionBank::create([
             'program_id' => Program::where('code', 'SAK')->value('id'),
@@ -62,7 +70,7 @@ class AttemptLifecycleTest extends TestCase
         ]);
 
         $this->post('/sak/access', [
-            'user_id' => $this->candidate->public_id,
+            'order_id' => $this->candidate->public_id,
             'token' => 'SAK-BAB03-UUBC',
         ])->assertStatus(303);
     }
@@ -94,7 +102,7 @@ class AttemptLifecycleTest extends TestCase
         $this->assertDatabaseCount('attempts', 2);
         $this->assertDatabaseHas('attempts', ['attempt_no' => 1, 'score_final' => 100]);
         $this->assertDatabaseHas('attempts', ['attempt_no' => 2, 'status' => 'in_progress']);
-        $this->get(route('sak.results'))->assertOk()->assertSee('Total attempt')->assertSee('GSAK_CBT001');
+        $this->get(route('sak.results'))->assertOk()->assertSee('Total attempt')->assertSee(self::ORDER_ID);
     }
 
     public function test_expired_attempt_is_finalized_and_rejects_late_answers(): void

@@ -19,7 +19,7 @@ class DatabaseSchemaTest extends TestCase {
 
     public function test_critical_columns_exist(): void {
         $this->assertTrue(Schema::hasColumns('candidate_users', ['id', 'public_id', 'status']));
-        $this->assertTrue(Schema::hasColumns('programs', ['id', 'code', 'slug', 'name']));$this->assertTrue(Schema::hasColumns('question_banks', ['id', 'program_id', 'code', 'version']));
+        $this->assertTrue(Schema::hasColumns('programs', ['id', 'code', 'slug', 'name', 'entitlement_key']));$this->assertTrue(Schema::hasColumns('question_banks', ['id', 'program_id', 'code', 'version']));
         $this->assertTrue(Schema::hasColumns('exams', ['id', 'program_id', 'code', 'slug', 'duration_seconds', 'pass_score']));$this->assertTrue(Schema::hasColumns('exam_tokens', ['id', 'exam_id', 'token_hash', 'token_hint']));
         $this->assertTrue(Schema::hasColumns('questions', ['id', 'question_bank_id', 'code', 'type', 'points', 'answer_key_json', 'scoring_rules_json']));$this->assertTrue(Schema::hasColumns('question_options', ['id', 'question_id', 'option_key', 'is_correct']));
         $this->assertTrue(Schema::hasColumns('exam_questions', ['id', 'exam_id', 'question_id', 'section_code', 'sort_order', 'weight']));$this->assertTrue(Schema::hasColumns('attempts', ['id', 'public_uuid', 'candidate_user_id', 'exam_id', 'attempt_no', 'status']));

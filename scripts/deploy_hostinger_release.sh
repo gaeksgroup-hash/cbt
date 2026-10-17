@@ -35,6 +35,11 @@ if [ -f "$APP_ROOT/.env" ]; then
     cp -p "$APP_ROOT/.env" "$APP_ROOT/.env.backup-$STAMP"
 fi
 
+if ! grep -q '^GDP_ENTITLEMENT_SECRET=.' "$APP_ROOT/.env"; then
+    echo "GDP_ENTITLEMENT_SECRET is missing; configure the shared GDP/CBT secret before deployment." >&2
+    exit 1
+fi
+
 if [ -f "$APP_ROOT/artisan" ]; then
     "$PHP_BIN" "$APP_ROOT/artisan" down --retry=15 || true
 fi
@@ -56,9 +61,15 @@ else
 fi
 
 if grep -q '^CBT_ALLOW_PRE_GENERATED_CANDIDATES=' "$APP_ROOT/.env"; then
-    sed -i 's/^CBT_ALLOW_PRE_GENERATED_CANDIDATES=.*/CBT_ALLOW_PRE_GENERATED_CANDIDATES=true/' "$APP_ROOT/.env"
+    sed -i 's/^CBT_ALLOW_PRE_GENERATED_CANDIDATES=.*/CBT_ALLOW_PRE_GENERATED_CANDIDATES=false/' "$APP_ROOT/.env"
 else
-    printf 'CBT_ALLOW_PRE_GENERATED_CANDIDATES=true\n' >> "$APP_ROOT/.env"
+    printf 'CBT_ALLOW_PRE_GENERATED_CANDIDATES=false\n' >> "$APP_ROOT/.env"
+fi
+
+if grep -q '^GDP_ENTITLEMENT_URL=' "$APP_ROOT/.env"; then
+    sed -i 's|^GDP_ENTITLEMENT_URL=.*|GDP_ENTITLEMENT_URL=https://gdp.gaeks.com/api/cbt-entitlements.php|' "$APP_ROOT/.env"
+else
+    printf 'GDP_ENTITLEMENT_URL=https://gdp.gaeks.com/api/cbt-entitlements.php\n' >> "$APP_ROOT/.env"
 fi
 
 cd "$APP_ROOT"

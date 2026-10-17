@@ -1,82 +1,76 @@
 @extends('layouts.app')
 
-@section('title', 'Beranda Platform')
+@section('title', 'Platform Ujian Berbasis Buku')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-    <div class="text-center max-w-3xl mx-auto mb-16">
-        <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-[#012E34]/5 text-[#012E34] border border-[#012E34]/10 mb-4">
-            <span class="w-2 h-2 rounded-full bg-[#0891B2] mr-2"></span>
-            Pratinjau pengembangan
-        </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-[#012E34] tracking-tight mb-4">
-            GAEKS CBT
-        </h1>
-        <p class="text-lg sm:text-xl text-slate-600 font-medium mb-3">
-            Computer-Based Testing Platform
-        </p>
-        <p class="text-base text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            Pratinjau platform CBT GAEKS. Halaman informasi sudah tersedia; pengerjaan ujian, penilaian, dan administrasi belum dibuka untuk publik.
-        </p>
-    </div>
-
-    <div class="max-w-4xl mx-auto">
-        <div class="flex items-center justify-between mb-6 pb-2 border-b border-slate-200">
-            <h2 class="text-xl font-bold text-[#012E34]">Program Ujian</h2>
-            <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Pratinjau, bukan ujian aktif</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 flex flex-col justify-between hover:border-[#0891B2]/50 transition-all">
-                <div>
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider bg-[#012E34] text-white">Program Utama</span>
-                        <span class="text-xs font-medium text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">Dalam pengembangan</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-[#012E34] mb-2">
-                        Sertifikasi Ahli Kepabeanan
-                    </h3>
-                    <p class="text-sm text-slate-600 mb-4 leading-relaxed">
-                        Rencana modul evaluasi mandiri sertifikasi kepabeanan mencakup Bab 01 s.d. Bab 11 serta Tryout Akbar SAK. Akses ujian belum tersedia.
-                    </p>
-                    <ul class="text-xs text-slate-500 space-y-1.5 mb-6">
-                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#0891B2] mr-2"></span>Bank soal sumber: 110 soal bab dan 32 soal tryout</li>
-                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-[#0891B2] mr-2"></span>Review editorial dan mesin ujian masih berlangsung</li>
-                    </ul>
-                </div>
-                <div>
-                    <a href="{{ route('sak.landing') }}" class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#012E34] hover:bg-[#0F4C5C] transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#0891B2]">
-                        Buka Program SAK
-                        <svg class="w-4 h-4 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </a>
-                </div>
-            </div>
-
-            <div class="bg-slate-50 rounded-xl border border-dashed border-slate-300 p-6 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="px-2.5 py-0.5 rounded text-xs font-semibold uppercase tracking-wider bg-slate-200 text-slate-600">Extensible Engine</span>
-                        <span class="text-xs font-medium text-slate-500">Upcoming</span>
-                    </div>
-                    <h3 class="text-xl font-bold text-slate-700 mb-2">
-                        Future CBT Programs
-                    </h3>
-                    <p class="text-sm text-slate-500 mb-4 leading-relaxed">
-                        Arsitektur platform dirancang reusable untuk memuat berbagai kurikulum, bank soal, dan program sertifikasi logistik maupun manajemen lainnya.
-                    </p>
-                    <ul class="text-xs text-slate-400 space-y-1.5 mb-6">
-                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 mr-2"></span>Multi-tenant Program Registry</li>
-                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 mr-2"></span>Shared Question Bank & Attempt Engine</li>
-                        <li class="flex items-center"><span class="w-1.5 h-1.5 rounded-full bg-slate-300 mr-2"></span>Independent Token Routers</li>
-                    </ul>
-                </div>
-                <div>
-                    <button type="button" disabled class="w-full inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 bg-slate-200 cursor-not-allowed">
-                        Segera Hadir
-                    </button>
-                </div>
+<div class="document-page">
+    <section class="hero-grid" aria-labelledby="platform-title">
+        <div class="hero-copy">
+            <p class="document-kicker">Platform ujian GAEKS</p>
+            <h1 id="platform-title" class="display-title">Baca bukunya. <em>Uji pemahamannya.</em></h1>
+            <p class="lead-copy">GAEKS CBT menghubungkan buku yang Anda beli di GDP dengan paket ujian yang sesuai. Satu Order ID menyimpan seluruh riwayat pengerjaan, skor terbaik, dan kesempatan mengulang.</p>
+            <div class="mt-8 flex flex-wrap gap-3">
+                <a class="button-primary" href="{{ route('sak.landing') }}">Masuk ke ujian SAK</a>
+                <a class="button-secondary" href="https://gdp.gaeks.com/ebooks" rel="noopener">Lihat buku di GDP</a>
             </div>
         </div>
-    </div>
+
+        <dl class="hero-ledger" aria-label="Isi platform saat ini">
+            <div class="ledger-row"><dt>Program aktif</dt><dd>{{ $programCount }}</dd></div>
+            <div class="ledger-row"><dt>Paket ujian</dt><dd>{{ $examCount }}</dd></div>
+            <div class="ledger-row"><dt>Soal tersedia</dt><dd>{{ $questionCount }}</dd></div>
+        </dl>
+    </section>
+
+    <section aria-labelledby="program-heading">
+        <div class="section-rule">
+            <span class="section-number">01</span>
+            <div>
+                <h2 id="program-heading" class="section-heading">Program yang dapat dikerjakan</h2>
+                <p class="section-summary">Setiap program memiliki bank soal, aturan waktu, dan syarat akses sendiri. Hanya paket yang terhubung dengan buku pada Order ID Anda yang akan dibuka.</p>
+            </div>
+        </div>
+
+        <article class="program-file">
+            <div class="program-file__index">
+                <div>
+                    <span class="program-file__code">PROGRAM / SAK / 001</span>
+                    <h3>Sertifikasi Ahli Kepabeanan</h3>
+                    <p>Latihan per bab dan tryout terpadu berdasarkan materi kepabeanan GAEKS Publishing.</p>
+                </div>
+                <span class="status-stamp">Aktif</span>
+            </div>
+            <div class="program-file__body">
+                <dl class="file-meta">
+                    <div><dt>Paket</dt><dd>{{ $examCount }}</dd></div>
+                    <div><dt>Soal</dt><dd>{{ $questionCount }}</dd></div>
+                    <div><dt>Riwayat</dt><dd>Tetap</dd></div>
+                </dl>
+                <ol class="file-list">
+                    <li><span>01</span><span>Latihan materi per bab dengan timer dan penilaian otomatis untuk soal objektif.</span></li>
+                    <li><span>02</span><span>Tryout dua sesi untuk pilihan ganda, hitungan, dan uraian.</span></li>
+                    <li><span>03</span><span>Skor tiap attempt tersimpan dan dapat dibandingkan saat mengulang.</span></li>
+                </ol>
+                <a class="button-primary mt-6" href="{{ route('sak.landing') }}">Buka berkas ujian</a>
+            </div>
+        </article>
+    </section>
+
+    <section aria-labelledby="access-heading">
+        <div class="section-rule">
+            <span class="section-number">02</span>
+            <div>
+                <h2 id="access-heading" class="section-heading">Akses mengikuti pembelian buku</h2>
+                <p class="section-summary">Order ID bukan akun terpisah. Nomor ini menjadi bukti pembelian sekaligus identitas hasil ujian Anda.</p>
+            </div>
+        </div>
+
+        <ol class="process-line">
+            <li class="process-step"><span class="process-step__no">01 / BELI</span><strong>Pilih e-book di GDP</strong><p>Selesaikan checkout pada katalog resmi GAEKS Digital Publishing.</p></li>
+            <li class="process-step"><span class="process-step__no">02 / BAYAR</span><strong>Tunggu pembayaran terverifikasi</strong><p>Akses baru berlaku ketika transaksi sudah berstatus dibayar.</p></li>
+            <li class="process-step"><span class="process-step__no">03 / CATAT</span><strong>Ambil Order ID dari email</strong><p>Email status transaksi memuat referensi dengan format GDP-...</p></li>
+            <li class="process-step"><span class="process-step__no">04 / UJIAN</span><strong>Masukkan token buku</strong><p>Order ID dan token diperiksa bersama sebelum paket dibuka.</p></li>
+        </ol>
+    </section>
 </div>
 @endsection
