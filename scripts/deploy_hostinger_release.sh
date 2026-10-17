@@ -6,6 +6,7 @@ APP_ROOT="/home/u922552590/domains/gaeks.com/cbt-app"
 WEB_ROOT="/home/u922552590/domains/gaeks.com/public_html/cbt"
 STAGE_ROOT="$(cd -- "$(dirname -- "$0")" && pwd)"
 PHP_BIN="/opt/alt/php83/usr/bin/php"
+ENTITLEMENT_SECRET_FILE="/home/u922552590/domains/gaeks.com/cbt-entitlement-secret"
 STAMP="$(date +%Y%m%d-%H%M%S)"
 DEPLOY_STATUS="failed"
 
@@ -33,6 +34,16 @@ fi
 
 if [ -f "$APP_ROOT/.env" ]; then
     cp -p "$APP_ROOT/.env" "$APP_ROOT/.env.backup-$STAMP"
+fi
+
+if [ -r "$ENTITLEMENT_SECRET_FILE" ]; then
+    ENTITLEMENT_SECRET="$(tr -d '\r\n' < "$ENTITLEMENT_SECRET_FILE")"
+    if [ "${#ENTITLEMENT_SECRET}" -lt 48 ]; then
+        echo "Shared GDP/CBT entitlement secret is invalid." >&2
+        exit 1
+    fi
+    sed -i '/^GDP_ENTITLEMENT_SECRET=/d' "$APP_ROOT/.env"
+    printf 'GDP_ENTITLEMENT_SECRET=%s\n' "$ENTITLEMENT_SECRET" >> "$APP_ROOT/.env"
 fi
 
 if ! grep -q '^GDP_ENTITLEMENT_SECRET=.' "$APP_ROOT/.env"; then
