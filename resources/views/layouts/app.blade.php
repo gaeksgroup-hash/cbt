@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title', 'GAEKS CBT') — Computer-Based Testing Platform</title>
+    <title>@yield('title', 'GAEKS CBT') | Computer-Based Testing Platform</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -54,7 +54,7 @@
                     </a>
                 </div>
 
-                <nav class="flex items-center space-x-4">
+                <nav aria-label="Navigasi utama" class="hidden sm:flex items-center space-x-4">
                     <a href="{{ route('landing') }}" class="text-sm font-medium text-slate-600 hover:text-[#012E34] transition-colors">Platform</a>
                     <a href="{{ route('sak.landing') }}" class="text-sm font-medium text-slate-600 hover:text-[#012E34] transition-colors">Program SAK</a>
                     <a href="{{ route('health') }}" target="_blank" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors">
@@ -62,6 +62,7 @@
                         Status sistem
                     </a>
                 </nav>
+                <a href="{{ route('sak.landing') }}" class="sm:hidden inline-flex min-h-11 items-center rounded-lg px-3 text-sm font-semibold text-[#012E34] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0891B2]">Program SAK</a>
             </div>
         </div>
     </header>
@@ -76,7 +77,7 @@
             <div class="flex items-center space-x-6">
                 <span class="text-slate-400">cbt.gaeks.com</span>
                 <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
-                <span>Pratinjau pengembangan</span>
+                <span>{{ config('cbt.preview_only') ? 'Pratinjau pengembangan' : 'Platform ujian aktif' }}</span>
             </div>
         </div>
     </footer>

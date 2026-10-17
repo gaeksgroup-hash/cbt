@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class Attempt extends Model {
     protected $table = 'attempts';
-    protected $fillable = ['public_uuid', 'candidate_user_id', 'exam_id', 'attempt_no', 'status', 'started_at', 'expires_at', 'submitted_at', 'score_auto', 'score_manual', 'score_final', 'passed', 'duration_used_seconds', 'grading_status'];
+    protected $fillable = ['public_uuid', 'candidate_user_id', 'exam_id', 'session_code', 'attempt_no', 'status', 'started_at', 'expires_at', 'submitted_at', 'score_auto', 'score_manual', 'score_final', 'passed', 'duration_used_seconds', 'grading_status'];
     protected $casts = [
         'attempt_no' => 'integer',
         'started_at' => 'datetime',
@@ -29,4 +29,5 @@ class Attempt extends Model {
     public function exam(): BelongsTo { return $this->belongsTo(Exam::class, 'exam_id'); }
     public function attemptQuestions(): HasMany { return $this->hasMany(AttemptQuestion::class, 'attempt_id')->orderBy('display_order'); }
     public function attemptAnswers(): HasMany { return $this->hasMany(AttemptAnswer::class, 'attempt_id'); }
+    public function getRouteKeyName(): string { return 'public_uuid'; }
 }
